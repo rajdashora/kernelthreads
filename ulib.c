@@ -104,3 +104,28 @@ memmove(void *vdst, const void *vsrc, int n)
     *dst++ = *src++;
   return vdst;
 }
+
+typedef struct lock_t {
+  int idk;
+} lock_t;
+
+int thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2) {
+  return 0;
+}
+
+int thread_join() {
+  return 0;
+}
+
+void lock_init(lock_t *lock) {
+  return;
+}
+
+void lock_acquire(lock_t *lock) {
+  // while( fetch_and_add(&lock->turn, 0) != turn )
+  return;
+}
+
+void lock_release(lock_t *lock) {
+  return;
+}
