@@ -105,9 +105,7 @@ memmove(void *vdst, const void *vsrc, int n)
   return vdst;
 }
 
-typedef struct lock_t {
-  int idk;
-} lock_t;
+
 
 int thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2) {
   return 0;
