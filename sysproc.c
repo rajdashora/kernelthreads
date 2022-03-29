@@ -96,7 +96,7 @@ int sys_clone(void)
   // if(argint(0, &pid) < 0)
   //   return -1;
   // return clone(pid);
-  return 0;
+  return clone(0,0,0,0);
 }
 
 int sys_join(void)
@@ -105,5 +105,5 @@ int sys_join(void)
   // if(argint(0, &pid) < 0)
   //   return -1;
   // return join(pid);
-  return 0;
+  return join(0);
 }
