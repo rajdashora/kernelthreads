@@ -6,6 +6,14 @@
 
 #define PGSIZE (4096)
 
+struct stackmap
+{
+  void *p;
+  void *stack;
+};
+
+struct stackmap stack_list[255];
+
 char *
 strcpy(char *s, const char *t)
 {
@@ -108,11 +116,21 @@ int thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2)
 {
   void *stack, *p = malloc(PGSIZE * 2);
   stack = p + (PGSIZE - (uint)p % PGSIZE);
-
-  int pid = clone(start_routine, 0, 0, stack);
+  int pid = clone(start_routine, arg1, arg2, stack);
 
   if (pid < 0)
     return -1;
+
+  // store mapping
+  for (int i = 0; i < 255; i++)
+  {
+    if (stack_list[i].p == 0)
+    {
+      stack_list[i].p = p;
+      stack_list[i].stack = stack;
+      break;
+    }
+  }
 
   return pid;
 }
@@ -125,8 +143,14 @@ int thread_join()
   if (pid < 0)
     return -1;
 
-  void *p = stack - (uint)stack % PGSIZE;
-  free(p);
+  for (int i = 0; i < 255; i++)
+  {
+    if (stack_list[i].stack == stack)
+    {
+      free(stack_list[i].p);
+      break;
+    }
+  }
 
   return pid;
 }
