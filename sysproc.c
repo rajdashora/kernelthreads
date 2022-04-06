@@ -7,67 +7,62 @@
 #include "mmu.h"
 #include "proc.h"
 
-int
-sys_fork(void)
+int sys_fork(void)
 {
   return fork();
 }
 
-int
-sys_exit(void)
+int sys_exit(void)
 {
   exit();
-  return 0;  // not reached
+  return 0; // not reached
 }
 
-int
-sys_wait(void)
+int sys_wait(void)
 {
   return wait();
 }
 
-int
-sys_kill(void)
+int sys_kill(void)
 {
   int pid;
 
-  if(argint(0, &pid) < 0)
+  if (argint(0, &pid) < 0)
     return -1;
   return kill(pid);
 }
 
-int
-sys_getpid(void)
+int sys_getpid(void)
 {
   return myproc()->pid;
 }
 
-int
-sys_sbrk(void)
+int sys_sbrk(void)
 {
   int addr;
   int n;
 
-  if(argint(0, &n) < 0)
+  if (argint(0, &n) < 0)
     return -1;
   addr = myproc()->sz;
-  if(growproc(n) < 0)
+  if (growproc(n) < 0)
     return -1;
   return addr;
 }
 
-int
-sys_sleep(void)
+int sys_sleep(void)
 {
   int n;
   uint ticks0;
 
-  if(argint(0, &n) < 0)
+  if (argint(0, &n) < 0)
     return -1;
   acquire(&tickslock);
   ticks0 = ticks;
-  while(ticks - ticks0 < n){
-    if(myproc()->killed){
+  while (ticks - ticks0 < n)
+  {
+    if (myproc()->killed)
+    {
       release(&tickslock);
       return -1;
     }
@@ -79,8 +74,7 @@ sys_sleep(void)
 
 // return how many clock tick interrupts have occurred
 // since start.
-int
-sys_uptime(void)
+int sys_uptime(void)
 {
   uint xticks;
 
@@ -92,18 +86,22 @@ sys_uptime(void)
 
 int sys_clone(void)
 {
-  // int pid;
-  // if(argint(0, &pid) < 0)
-  //   return -1;
-  // return clone(pid);
-  return clone(0,0,0,0);
+  void (*fcn)(void *, void *);
+  void *arg1;
+  void *arg2;
+  void *stack;
+  if (argptr(0, (void *)&fcn, sizeof(void *)) < 0 ||
+      argptr(1, (void *)&arg1, sizeof(void *)) < 0 ||
+      argptr(2, (void *)&arg2, sizeof(void *)) < 0 ||
+      argptr(3, (void *)&stack, sizeof(void *)) < 0)
+    return -1;
+  return clone(fcn, arg1, arg2, stack);
 }
 
 int sys_join(void)
 {
-  // int pid;
-  // if(argint(0, &pid) < 0)
-  //   return -1;
-  // return join(pid);
-  return join(0);
+  void **stack;
+  if (argptr(0, (void *)&stack, sizeof(void *)) < 0)
+    return -1;
+  return join(stack);
 }
