@@ -172,8 +172,18 @@ int growproc(int n)
   {
     if ((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
       return -1;
-  }
+  }  
+  
+  acquire(&ptable.lock);
   curproc->sz = sz;
+  struct proc *p;
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if (p->pgdir == curproc->pgdir)
+      p->sz = sz;
+  }
+  release(&ptable.lock);
+
   switchuvm(curproc);
   return 0;
 }

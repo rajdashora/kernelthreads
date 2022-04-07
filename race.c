@@ -40,7 +40,7 @@ main(int argc, char *argv[])
 
     a+=10;
 
-    //printf(1, "produce in main\n");
+    // printf(1, "produce in main\n");
 
     sleep(10);
   }
@@ -53,10 +53,10 @@ main(int argc, char *argv[])
   for(i = 0; i < 4; i++) {
     int join_pid = thread_join();
     assert(join_pid > 0);
-    //printf(1, "joined pid %d\n", i);
+    // printf(1, "joined pid %d\n", i);
   }
   
-  //printf(1, "b is %d\n", b);
+  printf(1, "b is %d\n", b);
   if(b == 500)
     printf(1, "TEST PASSED\n");
   exit();
@@ -64,23 +64,23 @@ main(int argc, char *argv[])
 
 void
 consume(void *arg1, void *arg2) {
-  //printf(1, "in consume\n");
+  // printf(1, "in consume\n");
   sleep(100);
-  // lock_acquire(&lock);
+  lock_acquire(&lock);
   while(running_flag) {
-    //printf(1, "in consume\n");
+    // printf(1, "in consume\n");
 
 	if (a > 0) {
 		a--;
 
-		//printf(1, "consumed 1\n");
+		// printf(1, "consumed 1\n");
 		b++;
 
 	}
 
   }
-  // lock_release(&lock);
+  lock_release(&lock);
 
-  //printf(1, "out of consume\n");
+  // printf(1, "out of consume\n");
   exit();
 }

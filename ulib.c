@@ -175,7 +175,7 @@ void lock_init(lock_t *lock)
 void lock_acquire(lock_t *lock)
 {
   int myturn = fetch_and_add(&lock->ticket, 1);
-  while(fetch_and_add(&lock->turn, 0) != myturn)
+  while(fetch_and_add(&lock->turn, 0) != myturn);
   return;
 }
 
