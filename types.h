@@ -4,6 +4,6 @@ typedef unsigned char uchar;
 typedef uint pde_t;
 typedef struct lock_t
 {
-    uint ticket;
-    uint turn;
+    int ticket;
+    int turn;
 } lock_t;
